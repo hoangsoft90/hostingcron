@@ -1,0 +1,41 @@
+name: Cron BCK every weekend
+description: update site
+
+on:
+  schedule:
+    - cron: "0 0 * * 6,0"
+#on:
+  push:
+    branches:
+    - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@master
+    - name: Installing PHP
+      uses: shivammathur/setup-php@master
+      with:
+        php-version: '7.3'
+    - name: Installing Terminus
+      uses: kopepasah/setup-pantheon-terminus@master
+      with:
+        pantheon-machine-token: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
+    - name: update files
+      if: success() && ${{ secrets.SITE_URL }} != null
+      run: curl -X POST '${{ secrets.SITE_URL }}' -d 'secret=${{ secrets.PANTHEON_MACHINE_TOKEN }}'
+
+    - name: commit the changed
+      if: success() && ${{ secrets.PANTHEON_DOMAIN }} != null
+      run: terminus env:commit --message "updated" --force -- ${{ secrets.PANTHEON_DOMAIN }}
+
+    - name: Run backup
+      if: ${{ secrets.GDRIVE_FOLDER }} != null && ${{ secrets.SERVICE_ACCOUNT }} != null
+      run: |
+        docker run --rm -it \
+        -e PANTHEON_TOKEN=${{ secrets.PANTHEON_MACHINE_TOKEN }} \
+        -e PANTHEON_SITE=${{ secrets.PANTHEON_DOMAIN }} \
+        -e GDRIVE_FOLDER=${{ secrets.GDRIVE_FOLDER }} \
+        -e SERVICE_ACCOUNT=${{ secrets.SERVICE_ACCOUNT }} \
+        -v $PWD:/srv -w/srv huyhoang08/backupweb
