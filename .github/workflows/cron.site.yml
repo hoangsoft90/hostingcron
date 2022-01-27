@@ -15,4 +15,4 @@ jobs:
       - name: Call wordpress cron route
         run: |
           curl --request GET --url '${{ secrets.SITE_URL }}/wp-cron.php?doing_wp_cron'
-        if: ${{secrets.SITE_URL}} != null
+        

@@ -22,15 +22,15 @@ jobs:
       with:
         pantheon-machine-token: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
     - name: update files
-      if: success() && ${{ secrets.SITE_URL }} != null
+      if: success()
       run: curl -X POST '${{ secrets.SITE_URL }}' -d 'secret=${{ secrets.PANTHEON_MACHINE_TOKEN }}'
 
     - name: commit the changed
-      if: success() && ${{ secrets.PANTHEON_DOMAIN }} != null
+      if: success()
       run: terminus env:commit --message "updated" --force -- ${{ secrets.PANTHEON_DOMAIN }}
 
     - name: Run backup
-      if: ${{ secrets.GDRIVE_FOLDER }} != null && ${{ secrets.SERVICE_ACCOUNT }} != null
+      if: success()
       run: |
         docker run --rm -it \
         -e PANTHEON_TOKEN=${{ secrets.PANTHEON_MACHINE_TOKEN }} \
