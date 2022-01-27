@@ -1,9 +1,13 @@
 name: every day cron
-description: cron site
 
 on:
   schedule:
     - cron: '0 1 * * *'
+
+  push:
+    branches:
+    - master
+
 jobs:
   cron:
     runs-on: ubuntu-20.04

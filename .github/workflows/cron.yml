@@ -1,5 +1,4 @@
 name: Cron BCK every weekend
-description: update site
 
 on:
   schedule:
