@@ -32,7 +32,7 @@ jobs:
     - name: Run backup
       if: success()
       run: |
-        docker run --rm -it \
+        docker run \
         -e PANTHEON_TOKEN=${{ secrets.PANTHEON_MACHINE_TOKEN }} \
         -e PANTHEON_SITE=${{ secrets.PANTHEON_DOMAIN }} \
         -e GDRIVE_FOLDER=${{ secrets.GDRIVE_FOLDER }} \
